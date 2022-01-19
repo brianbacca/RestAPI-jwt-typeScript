@@ -53,12 +53,15 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const token = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.TOKEN_SECRET || "tokenTest", {
         expiresIn: 60 * 60 * 24,
     });
-    res.header("auth-token", token).json(user);
+    return res.header("auth-token", token).json(user);
 });
 exports.signin = signin;
-const profile = (req, res) => {
-    console.log(req.header("auth-token"));
-    res.send("profile");
-};
+//Validation profile
+const profile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield User_1.default.findById(req.userId, { password: 0 });
+    if (!user)
+        return res.status(400).json({ msg: "No User found" });
+    return res.json(user);
+});
 exports.profile = profile;
 //# sourceMappingURL=auth.controller.js.map

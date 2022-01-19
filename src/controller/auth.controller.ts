@@ -36,7 +36,7 @@ export const signup = async (
 };
 
 //login
-export const signin = async (req: Request, res: Response) => {
+export const signin = async (req: Request, res: Response): Promise<Response> => {
   const { email, password } = req.body;
   const user = await User.findOne({ email: email });
   if (!user) return res.status(400).json({ msg: "Email or password is wrong" });
@@ -52,11 +52,13 @@ export const signin = async (req: Request, res: Response) => {
       expiresIn: 60 * 60 * 24,
     }
   );
-  res.header("auth-token", token).json(user);
+  return res.header("auth-token", token).json(user);
 };
 
-export const profile = async (req: Request, res: Response) => {
+
+//Validation profile
+export const profile = async (req: Request, res: Response): Promise<Response> => {
   const user = await User.findById(req.userId, { password: 0 });
   if (!user) return res.status(400).json({ msg: "No User found" });
-  res.json(user);
+  return res.json(user);
 };
